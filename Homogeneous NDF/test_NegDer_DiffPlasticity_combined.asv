@@ -1,0 +1,78 @@
+close all
+%% parameters
+alpha = 0.01; % learnign rate
+Wneg = 500; % derivative feedback strength
+
+TStim = 50; % time when stim off and delay begin 
+TAll = 350; % tiem when delay ends
+n = 100; % number of trials
+
+% Istim = Wneg*ones(n,1); % fixed input strength
+Istim = 2*Wneg*rand(n,1); % variable input strength
+InputTest = Wneg*1*[.5 1 2]; % input used to test weight
+%% test weight without plasticity
+figure;hold on
+yinit = [0; Wneg*1]; % initial value of (activit, weight); balanced positive and derivative feedback 
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(1),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(2),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(3),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+% ylim([0 0.1*r0])
+hold off
+
+figure;hold on
+yinit = [0; Wneg*.9]; % initial value of (activit, weight); 10% pergurbation
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(1),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(2),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(3),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+% ylim([0 .1*r0])
+hold off
+%% with plasticity
+Start = now;
+Wend = zeros(n,1); % record weight balance ratio evolution
+ytotal = zeros(
+i = 1; % first trial
+yinit = [0; Wneg*.9]; % begin with a 10% perturbation
+[t y]=ode23(@(t,y) odefun_NegDer_DiffPlas_new_combined(t,y,alpha,Wneg,Istim(i),TStim),[0 TAll],yinit);
+ytotal = y;
+Wend(1) = y(end,2)/Wneg;
+for i = 2:n
+    if any(i == floor([1, 5:5:100]*n/100)) % report percentage of running
+        Lap = now; 
+        disp(['    ', num2str(round(100*i/n)), '%', ' Time elapsed: ', ...
+                datestr(Lap-Start, 'HH:MM:SS')])
+    end
+    yinit = [0; y(end,2)];
+    [t y]=ode23(@(t,y) odefun_NegDer_DiffPlas_new_combined(t,y,alpha,Wneg,Istim(i),TStim),[0 TAll],yinit);
+
+    Wend(i) = y(end,2)/Wneg;
+    ytotal = [ytotal;y];
+end
+figure
+plot(Wend)
+
+figure;hold on
+yinit = [0; Wend(n)*Wneg];
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(1),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(2),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+[t y]=ode23(@(t,y) odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,InputTest(3),TStim),[0 TAll],yinit);
+plot(t,y(:,1))
+hold off
+
+%%
+Wneg = 500;
+[X,Y] = meshgrid(Wneg*0:Wneg*0.005:0.1*Wneg,Wneg*0.9:Wneg*0.002:1.01*Wneg);
+U = (-(1+Wneg-Y).*X)/(Wneg+1);
+V = -alpha*X.*U;
+figure;
+quiver(X,Y,U,V)
+hold on
+plot(ytotal(:,1),ytotal(:,2))
+xlim([0 50]);ylim([Wneg*0.9 1.01*Wneg])
