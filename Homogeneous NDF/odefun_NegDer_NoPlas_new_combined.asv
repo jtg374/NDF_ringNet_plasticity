@@ -1,8 +1,0 @@
-function dydt = odefun_NegDer_NoPlas_new_combined(t,y,alpha,Wneg,Istim,tstim)
-% differential equations without plasticity
-% variables: y(1):activitu; y(2):net feedback weight (not used)
-% parameters: alpha:learning rate (not used); 
-dydt = zeros(2,1);
-dydt(1) = (-(1+Wneg-y(2))*y(1)+Istim*(t<tstim))/(Wneg+1);
-dydt(2) = 0;
-
