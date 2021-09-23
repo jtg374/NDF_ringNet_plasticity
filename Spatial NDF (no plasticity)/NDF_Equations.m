@@ -23,8 +23,10 @@ qE = param.qE;
 qI = param.qI;
 
 % main ode eqs
+silence = ones(N);
+% silence(10:20,:)=0;
 % % Neurons Populations and Synapses
-dRe = 1./param.TE .*( -RE + qE(MEE*SEE - MEI*SEI + IEo*IStim));
+dRe = 1./param.TE .*( -RE + qE(MEE*SEE - MEI*SEI + IEo*IStim)) .* silence;
 dRi = 1./param.TI .*( -RI + qI(MIE*SIE - MII*SII + IIo*IStim));
 dSee= 1./param.TEE.*(-SEE + RE);
 dSie= 1./param.TIE.*(-SIE + RE);

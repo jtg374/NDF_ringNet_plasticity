@@ -32,17 +32,16 @@ function param = NDF_Parameters(MEE)
     f_I = 1*exp(-(x/sigma_I).^2); % inhibitory weight profile
 
 
-    if nargin==0; MEE = zeros(nx,nx); end
+    MIE = zeros(nx,nx);
     MEI = zeros(nx,nx);
 
     for i = 1:nx
-        if nargin==0; MEE(i,:) = dx*circshift(f_E,[0 -pi/dx-1+i]); end
+        MIE(i,:) = dx*circshift(f_E,[0 -pi/dx-1+i]);
         MEI(i,:) = dx*circshift(f_I,[0 -pi/dx-1+i]);
     end
-    MIE = MEE;
     MII = MEI;
 
-    if nargin==0; MEE = JEE*MEE; end
+    if nargin==0; MEE = JEE*MIE; end
     MIE = JIE*MIE;
     MEI = JEI*MEI;
     MII = JII*MII;

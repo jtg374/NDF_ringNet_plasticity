@@ -81,8 +81,7 @@ hc=colorbar;
 hc.Ticks=[0,1];
 hc.TickLabels={'early','late'};
 %%
-% RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp)+IEo(:,sp)*(IStim)';
-RRR = RI(:,:,sp);
+RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp)+IEo(:,sp)*(IStim)';
 x = param.x; % neuron index
 N = nx;
 sp = 25; % stimulus index, 1:0, nx/2:pi
