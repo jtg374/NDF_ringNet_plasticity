@@ -1,6 +1,7 @@
-function NDF_with_Plasticity_Frameworks(a,lrD,lrH,nTrial,r_target)
+function NDF_with_Plasticity_Frameworks(a,lrD,nTrial)
+close all;lrH=0;r_target=20;
 % clc;clear all;close all;    
-datapath = ['tempData' datestr(now,'_yymmdd_HH_MM')  ];
+datapath = ['C:\Users\golde\Documents\Research\data\tempData' datestr(now,'_yymmdd_HH_MM')  ];
 mkdir(datapath)
 disp(datapath)
 mkdir([datapath '/FullData'])
@@ -26,13 +27,14 @@ y0 = [0;              % Stimlus
 nTrial = param.nTrial; % number of trials
 tTrial = param.tTrial; % total time of each trial
 TrialOn = param.TrialOn; % beginning of each trial
+TStimOff = param.TStimOff;
 TrialEnd = param.TDelayOff; % end of each trial
 dt_store = param.dt_store; % time resolution for store
 %% Solving ODE equations
 options = odeset('RelTol',1e-3,'AbsTol',1e-5); 
 disp(['Integration started at: ',datestr(now,'HH:MM:SS')])
 MEEt = zeros(nx,nx,nTrial);
-RE_readout = zeros(nx,np,nTrial);
+RE_Stim = zeros(nx,np,nTrial);
 g_readout = zeros(nx,nTrial);
 for iTrial=1:nTrial
     param.iTrial = iTrial;
@@ -47,26 +49,28 @@ for iTrial=1:nTrial
     RE = Rt(:,:,:,1);RI = Rt(:,:,:,2);SEE = Rt(:,:,:,3);SIE = Rt(:,:,:,4);SEI = Rt(:,:,:,5);SII = Rt(:,:,:,6); 
     % snapshot of each trial at the end of delay
     MEEt(:,:,iTrial) = MEE;    
-    RE_readout(:,:,iTrial) = RE(:,:,end);
+    RE_Stim(:,:,iTrial) = RE(:,:,1+TStimOff/dt_store);
     g=gt(:,end);g_readout(:,iTrial) = g;
     %% plot and save
     % addpath('/gpfsnyu/home/jtg374/MATLAB/CubeHelix') % we use CubeHelix colormap
-    if mod(iTrial,100)==0 | ismember(iTrial,[1,2,5,10,20,50]) %may specifity which trials are saved
-        save([datapath,'/FullData/results_' num2str(iTrial) '.mat'],'t','RE','RI','gt');
+    save([datapath,'/FullData/results_' num2str(iTrial) '.mat'],'t','RE','RI','SEE','SIE','SEI','SII');
+    if mod(iTrial,20)==0 || ismember(iTrial,[1,2,5,10]) %may specifity which trials are saved
         h2=figure; %imagesc([RE RE1])
-        imagesc(squeeze(RE(:,param.pNp(iTrial),:)),[0 50]);
+        imagesc(squeeze(RE(:,param.pNp(iTrial),:)),[0 100]);
         ylabel('neuron')
         xlabel('Time')
+        colorbar
         % colormap(cubehelix)
         saveas(h2,[datapath,'/ActFigures/RE_T_' num2str(iTrial) '.jpg'])
         h3=figure;
-        imagesc(RE(:,:,end),[0 50])
+        imagesc(RE(:,:,1+TStimOff/dt_store),[0 100])
         xlabel('stim position')
         ylabel('neuron')
+        colorbar
         % colormap(cubehelix)
         saveas(h3,[datapath,'/ActFigures/RE_X_' num2str(iTrial) '.jpg'])
         h4=figure;
-        imagesc(diag(g)*MEE,[0 10])
+        imagesc(diag(g)*MEE,[0 150])
         xlabel('pre-syn')
         xlabel('post-syn')
         % colormap(cubehelix)
@@ -84,7 +88,7 @@ for iTrial=1:nTrial
 end
 disp(['Integration ended at:   ',datestr(now,'HH:MM:SS')])
 
-save([datapath,'/results.mat'],'RE_readout','MEEt','g_readout');
+save([datapath,'/results.mat'],'RE_Stim','MEEt');
 saveas(h2,[datapath,'/RE_T_' num2str(iTrial) '.jpg'])
 saveas(h3,[datapath,'/RE_X_' num2str(iTrial) '.jpg'])
 saveas(h4,[datapath,'/g-MEE_' num2str(iTrial) '.jpg'])

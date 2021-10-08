@@ -17,7 +17,7 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     param.Tinput = 100; % NDF network cannot integrate fast-changing stimulus, see Lim & Goldman 2013 supp
 
     %% Discretizing the space x
-    nx = 64; % number of E and I neurons (equal)
+    nx = 4; % number of E and I neurons (equal)
     dx = 2*pi/nx;
     x = -pi:dx:pi-dx; %periodic boundary 
     np = nx; % number of parallel network (for different stimulus locations)
@@ -76,25 +76,25 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
 
     %% Perturbations
 %     a = 0.9; % perturbation stregnth set in function argument
-%     % % smooth local perturbation
-%     index_x = 0.125*pi;
-%     width_x = pi/4
-%     perturbation = 1 - (1-a)*exp(-((x-index_x)/width_x).^2);
-%     param.perturbation = perturbation;
-%     perturbation = repmat(perturbation',1,nx);
-%     MEE0 = MEE; MEE = MEE.*perturbation;
-%     param.MEE = MEE;
-%     param.MEE_unperturbed = MEE0;
-%     param.perturbation_type = 'local-rowwise(postsyn)';
+    % % smooth local perturbation
+    index_x = 0;
+    width_x = 1e-10;
+    perturbation = 1 - (1-a)*exp(-((x-index_x)/width_x).^2);
+    param.perturbation = perturbation;
+    perturbation = repmat(perturbation',1,nx);
+    MEE0 = MEE; MEE = MEE.*perturbation;
+    param.MEE = MEE;
+    param.MEE_unperturbed = MEE0;
+    param.perturbation_type = 'local-rowwise(postsyn)';
 %     param.perturbation_strength = a;    
 %     param.perturbation_index = index_x;
 %     param.perturbation_width = width_x;
 % global perturbation
-    MEE0 = MEE; MEE = MEE*a;
-    param.MEE = MEE;
-    param.MEE_unperturbed = MEE0;
-    param.perturbation_type = 'Global';
-    param.perturbation_strength = a;
+    % MEE0 = MEE; MEE = MEE*a;
+    % param.MEE = MEE;
+    % param.MEE_unperturbed = MEE0;
+    % param.perturbation_type = 'Global';
+    % param.perturbation_strength = a;
 % random perturbation
 %     a = 0.01;
 %     param.perturbation_strength = a;
@@ -122,7 +122,7 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     % param.MEE_unperturbed = MEE0;
 
     %% External Input
-    JEO = 2*J; % strength
+    JEO = 2*J*sqrt(64/nx); % strength
     IEO_init = 1.35*(exp(-(x/(pi/4)).^2)'+1*ones(nx,1));  % profile
     IEo = JEO*IEO_init; % external stimulus centered at 0
 
@@ -133,8 +133,8 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     %% simulation timing in milisecond
 
     T_on = 500; % time before stimulus on
-    Tstim = 500; % stimlus duration
-    Tmemory = 3000; % delay duration
+    Tstim = 2000; % stimlus duration
+    Tmemory = 6000; % delay duration
     Tforget = 0; % time to depress activity to null (not used)
     
     nTrial=nTrial; % number of trails
