@@ -80,6 +80,7 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     index_x = 0;
     width_x = 1e-10;
     perturbation = 1 - (1-a)*exp(-((x-index_x)/width_x).^2);
+    perturbation = [1,a,a,1];
     param.perturbation = perturbation;
     perturbation = repmat(perturbation',1,nx);
     MEE0 = MEE; MEE = MEE.*perturbation;
@@ -122,7 +123,7 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     % param.MEE_unperturbed = MEE0;
 
     %% External Input
-    JEO = 2*J*sqrt(64/nx); % strength
+    JEO = 2*J; % strength
     IEO_init = 1.35*(exp(-(x/(pi/4)).^2)'+1*ones(nx,1));  % profile
     IEo = JEO*IEO_init; % external stimulus centered at 0
 

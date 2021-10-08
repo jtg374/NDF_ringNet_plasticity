@@ -49,7 +49,7 @@ for iTrial=1:nTrial
     RE = Rt(:,:,:,1);RI = Rt(:,:,:,2);SEE = Rt(:,:,:,3);SIE = Rt(:,:,:,4);SEI = Rt(:,:,:,5);SII = Rt(:,:,:,6); 
     % snapshot of each trial at the end of delay
     MEEt(:,:,iTrial) = MEE;    
-    RE_Stim(:,:,iTrial) = RE(:,:,1+TStimOff/dt_store);
+    RE_Stim(:,:,iTrial) = RE(:,:,1+TStimOff(1)/dt_store);
     g=gt(:,end);g_readout(:,iTrial) = g;
     %% plot and save
     % addpath('/gpfsnyu/home/jtg374/MATLAB/CubeHelix') % we use CubeHelix colormap
@@ -63,7 +63,7 @@ for iTrial=1:nTrial
         % colormap(cubehelix)
         saveas(h2,[datapath,'/ActFigures/RE_T_' num2str(iTrial) '.jpg'])
         h3=figure;
-        imagesc(RE(:,:,1+TStimOff/dt_store),[0 100])
+        imagesc(RE(:,:,1+TStimOff(1)/dt_store),[0 100])
         xlabel('stim position')
         ylabel('neuron')
         colorbar
