@@ -53,7 +53,7 @@ sp = 25; % stimulus index, 1:0, nx/2:pi
 h2=figure(2);clf %imagesc([RE RE1])
 ax = axes;
 image(ax,'XData',t,'YData',x,'CData',RE(:,:,sp),'CDataMapping','scaled')
-colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
+% colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
 colorbar
 xlim(ax,[t(1),t(end)])
 xlabel('Time (ms)','FontSize',14)
@@ -121,7 +121,7 @@ hc.TickLabels={'early','late'};
 h3 = figure(3);
 ax = axes;
 image(ax,'XData',x,'YData',x,'CData',squeeze(RE(:,end,[N/2+1:N,1:N/2])),'CDataMapping','scaled')
-colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
+% colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
 ylim(ax,[x(1),x(end)])
 ylabel('neuron index \theta','FontSize',10)
 yticks([-pi,-pi/2,0,pi/2])
