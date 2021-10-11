@@ -53,24 +53,24 @@ for iTrial=1:nTrial
     g=gt(:,end);g_readout(:,iTrial) = g;
     %% plot and save
     % addpath('/gpfsnyu/home/jtg374/MATLAB/CubeHelix') % we use CubeHelix colormap
-    save([datapath,'/FullData/results_' num2str(iTrial) '.mat'],'t','RE','RI','SEE','SIE','SEI','SII');
     if mod(iTrial,20)==0 || ismember(iTrial,[1,2,5,10]) %may specifity which trials are saved
+        save([datapath,'/FullData/results_' num2str(iTrial) '.mat'],'t','RE','RI','SEE','SIE','SEI','SII');
         h2=figure; %imagesc([RE RE1])
-        imagesc(squeeze(RE(:,param.pNp(iTrial),:)),[0 100]);
+        imagesc(squeeze(RE(:,param.pNp(iTrial),:)));
         ylabel('neuron')
         xlabel('Time')
         colorbar
         % colormap(cubehelix)
         saveas(h2,[datapath,'/ActFigures/RE_T_' num2str(iTrial) '.jpg'])
         h3=figure;
-        imagesc(RE(:,:,1+TStimOff(1)/dt_store),[0 100])
+        imagesc(RE(:,:,1+TStimOff(1)/dt_store))
         xlabel('stim position')
         ylabel('neuron')
         colorbar
         % colormap(cubehelix)
         saveas(h3,[datapath,'/ActFigures/RE_X_' num2str(iTrial) '.jpg'])
         h4=figure;
-        imagesc(diag(g)*MEE,[0 150])
+        imagesc(diag(g)*MEE)
         xlabel('pre-syn')
         xlabel('post-syn')
         % colormap(cubehelix)

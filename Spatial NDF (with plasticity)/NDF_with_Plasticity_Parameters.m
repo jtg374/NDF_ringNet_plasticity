@@ -17,7 +17,7 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     param.Tinput = 100; % NDF network cannot integrate fast-changing stimulus, see Lim & Goldman 2013 supp
 
     %% Discretizing the space x
-    nx = 4; % number of E and I neurons (equal)
+    nx = 16; % number of E and I neurons (equal)
     dx = 2*pi/nx;
     x = -pi:dx:pi-dx; %periodic boundary 
     np = nx; % number of parallel network (for different stimulus locations)
@@ -77,10 +77,10 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     %% Perturbations
 %     a = 0.9; % perturbation stregnth set in function argument
     % % smooth local perturbation
-    index_x = 0;
-    width_x = 1e-10;
-    perturbation = 1 - (1-a)*exp(-((x-index_x)/width_x).^2);
-    perturbation = [1,a,a,1];
+    width_x = 0.4*pi;
+    perturbation = 1 - (1-a)*exp(-(x/width_x).^2);
+    perturbation = ones(size(x));
+    perturbation(x>=-pi/16&x<pi/16) = a;
     param.perturbation = perturbation;
     perturbation = repmat(perturbation',1,nx);
     MEE0 = MEE; MEE = MEE.*perturbation;
@@ -134,8 +134,8 @@ function param = NDF_with_Plasticity_Parameters(a,lrD,lrH,nTrial,r_target)
     %% simulation timing in milisecond
 
     T_on = 500; % time before stimulus on
-    Tstim = 2000; % stimlus duration
-    Tmemory = 6000; % delay duration
+    Tstim = 500; % stimlus duration
+    Tmemory = 3000; % delay duration
     Tforget = 0; % time to depress activity to null (not used)
     
     nTrial=nTrial; % number of trails
