@@ -27,15 +27,11 @@ function param = NDF_Parameters(MEE)
     %% Connectivity Profile
     J = 100; % feedback strength
     JEE = 1*J;JIE = 2*J;JEI = 1*J;JII = 2*J; 
-    sigma_E = 0.2*pi; sigma_I = 0.24*pi; % wider excitatory synaptic projection
+    sigma_E = 0.08*pi; sigma_I = 0.12*pi; % wider excitatory synaptic projection
     f_E = 1*exp(-(x/sigma_E).^2); % excitatory weight profile
     f_I = 1*exp(-(x/sigma_I).^2); % inhibitory weight profile
     
-    figure(1);clf
-    plot(x,f_E/max(f_E));hold on
-    plot(x,f_I/max(f_I));
-    xticks(-pi:pi/2:pi)
-    xlim([x(1) x(end)])
+    figure(1);plot(f_E/)
 
     MIE = zeros(nx,nx);
     MEI = zeros(nx,nx);

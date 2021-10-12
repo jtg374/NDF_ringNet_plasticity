@@ -1,9 +1,9 @@
 % clc;clear all;close all;
 close all
 %% load parameters
-% param = NDF_Parameters();
+param = NDF_Parameters();
 % learned or perturbed E-to-E weight matrix may be loaded as MEE and run
-param = NDF_Parameters(MEE);
+% param = NDF_Parameters(MEE);
 %% unpack Connectivity profile 
 MEE = param.MEE;
 MEI = param.MEI;
@@ -48,19 +48,21 @@ SII = Rt(:,:,:,6); SII = permute(SII,[2,1,3]);
 %% Figures
 x = param.x; % neuron index
 N = nx;
-sp = 25; % stimulus index, 1:0, nx/2:pi
+sp = 7; % stimulus index, 1:0, nx/2:pi
 % % full activity time course at a single stimlus location (heatmap)
 h2=figure(2);clf %imagesc([RE RE1])
 ax = axes;
-image(ax,'XData',t,'YData',x,'CData',RE(:,:,sp),'CDataMapping','scaled')
-% colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
+image(ax,'XData',t,'YData',1:nx,'CData',RE(:,:,sp),'CDataMapping','scaled')
+colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
 colorbar
 xlim(ax,[t(1),t(end)])
 xlabel('Time (ms)','FontSize',14)
-ylabel('neuron index \theta','FontSize',10)
-ylim(ax,[x(1),x(end)])
-yticks([-pi,-pi/2,0,pi/2])
-yticklabels({'-\pi','-\pi/2','0','\pi/2'})
+% ylabel('neuron index \theta','FontSize',10)
+% ylim(ax,[x(1),x(end)])
+% yticks([-pi,-pi/2,0,pi/2])
+% yticklabels({'-\pi','-\pi/2','0','\pi/2'})
+ylabel('Neuron')
+ylim([1 nx])
 hold(ax,'off');
 % % activity pattern evolution during stim
 % sp=nx/2;
@@ -81,54 +83,59 @@ hc=colorbar;
 hc.Ticks=[0,1];
 hc.TickLabels={'early','late'};
 %%
-% RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp)+IEo(:,sp)*(IStim)';
-RRR = RI(:,:,sp);
-x = param.x; % neuron index
-N = nx;
-sp = 25; % stimulus index, 1:0, nx/2:pi
-% % full activity time course at a single stimlus location (heatmap)
-h2=figure(2);clf %imagesc([RE RE1])
-ax = axes;
-image(ax,'XData',t,'YData',x,'CData',RRR,'CDataMapping','scaled')
-colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
-colorbar
-xlim(ax,[t(1),t(end)])
-xlabel('Time (ms)','FontSize',14)
-ylabel('neuron index \theta','FontSize',10)
-ylim(ax,[x(1),x(end)])
-yticks([-pi,-pi/2,0,pi/2])
-yticklabels({'-\pi','-\pi/2','0','\pi/2'})
-hold(ax,'off');
+RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp); % + IEo(:,sp)*(IStim)';
+% RRR = RI(:,:,sp);
+% x = param.x; % neuron index
+% N = nx;
+% % % full activity time course at a single stimlus location (heatmap)
+% h2=figure(4);clf %imagesc([RE RE1])
+% ax = axes;
+% image(ax,'XData',t,'YData',1:nx,'CData',RRR,'CDataMapping','scaled')
+% colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
+% colorbar
+% xlim(ax,[t(1),t(end)])
+% xlabel('Time (ms)','FontSize',14)
+% % ylabel('neuron index \theta','FontSize',10)
+% % ylim(ax,[x(1),x(end)])
+% % yticks([-pi,-pi/2,0,pi/2])
+% % yticklabels({'-\pi','-\pi/2','0','\pi/2'})
+% ylabel('Neuron')
+% ylim([1 nx])
+% hold(ax,'off');
 % % activity pattern evolution during stim
 % sp=nx/2;
-h7=figure(7);%hold on;
-ntd = sum(t<=TStimOff);
-colors = copper(ntd);
-plot(x,RRR(:,t<=TStimOff)','LineWidth',0.5)
-set(gca,'ColorOrder',colors)
-title('Evolution of activity pateern at stim period')
-xlabel('\theta','FontSize',14);ylabel('Firing Rate (Hz)','FontSize',14)
-set(gca,'Xtick',pi*(-1:0.5:1),'FontSize',14)
-set(gca,'XTickLabel',{'-pi','-pi/2','0','pi/2','pi'})
-xlim([-pi pi]);
-set(gca,'Ytick',0:50:100,'FontSize',14)
-ylim([0 120])
-colormap('copper')
-hc=colorbar;
-hc.Ticks=[0,1];
-hc.TickLabels={'early','late'};
+% h7=figure(8);%hold on;
+% ntd = sum(t<=TStimOff);
+% colors = copper(ntd);
+% plot(x,RRR(:,t<=TStimOff)','LineWidth',0.5)
+% set(gca,'ColorOrder',colors)
+% title('Evolution of activity pateern at stim period')
+% xlabel('\theta','FontSize',14);ylabel('Firing Rate (Hz)','FontSize',14)
+% set(gca,'Xtick',pi*(-1:0.5:1),'FontSize',14)
+% set(gca,'XTickLabel',{'-pi','-pi/2','0','pi/2','pi'})
+% xlim([-pi pi]);
+% set(gca,'Ytick',0:50:100,'FontSize',14)
+% ylim([0 120])
+% colormap('copper')
+% hc=colorbar;
+% hc.Ticks=[0,1];
+% hc.TickLabels={'early','late'};
 %% snapshot of activity pattern for all stimlus activity at end of delay
-h3 = figure(3);
-ax = axes;
-image(ax,'XData',x,'YData',x,'CData',squeeze(RE(:,end,[N/2+1:N,1:N/2])),'CDataMapping','scaled')
+% h3 = figure(3);clf
+% ax = axes;
+% image(ax,'XData',1:nx,'YData',1:nx,'CData',squeeze(RE(:,1+TStimOff/dt_store,[N/2+1:N,1:N/2])),'CDataMapping','scaled')
 % colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
-ylim(ax,[x(1),x(end)])
-ylabel('neuron index \theta','FontSize',10)
-yticks([-pi,-pi/2,0,pi/2])
-yticklabels({'-\pi','-\pi/2','0','\pi/2'})
-xlim(ax,[x(1),x(end)])
-xlabel('stimlus location','FontSize',10)
-xticks([-pi,-pi/2,0,pi/2])
-xticklabels({'-\pi','-\pi/2','0','\pi/2'})
-hold off
-
+% % ylim(ax,[x(1),x(end)])
+% % ylabel('neuron index \theta','FontSize',10)
+% % yticks([-pi,-pi/2,0,pi/2])
+% % yticklabels({'-\pi','-\pi/2','0','\pi/2'})
+% ylabel('Neuron')
+% ylim([1 nx])
+% % xlim(ax,[x(1),x(end)])
+% % xlabel('stimlus location','FontSize',10)
+% % xticks([-pi,-pi/2,0,pi/2])
+% % xticklabels({'-\pi','-\pi/2','0','\pi/2'})
+% xlabel('Stimulus location')
+% xlim([1 nx])
+% hold off
+% colorbar

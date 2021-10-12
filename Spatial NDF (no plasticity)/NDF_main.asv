@@ -1,9 +1,9 @@
 % clc;clear all;close all;
 close all
 %% load parameters
-% param = NDF_Parameters();
+param = NDF_Parameters();
 % learned or perturbed E-to-E weight matrix may be loaded as MEE and run
-param = NDF_Parameters(MEE);
+% param = NDF_Parameters(MEE);
 %% unpack Connectivity profile 
 MEE = param.MEE;
 MEI = param.MEI;
@@ -48,7 +48,7 @@ SII = Rt(:,:,:,6); SII = permute(SII,[2,1,3]);
 %% Figures
 x = param.x; % neuron index
 N = nx;
-sp = 25; % stimulus index, 1:0, nx/2:pi
+sp = 7; % stimulus index, 1:0, nx/2:pi
 % % full activity time course at a single stimlus location (heatmap)
 h2=figure(2);clf %imagesc([RE RE1])
 ax = axes;
@@ -81,10 +81,10 @@ hc=colorbar;
 hc.Ticks=[0,1];
 hc.TickLabels={'early','late'};
 %%
-RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp)+IEo(:,sp)*(IStim)';
+% RRR = MEE*SEE(:,:,sp) - MEI*SEI(:,:,sp)+IEo(:,sp)*(IStim)';
+RRR = RI(:,:,sp);
 x = param.x; % neuron index
 N = nx;
-sp = 25; % stimulus index, 1:0, nx/2:pi
 % % full activity time course at a single stimlus location (heatmap)
 h2=figure(2);clf %imagesc([RE RE1])
 ax = axes;
@@ -119,8 +119,8 @@ hc.TickLabels={'early','late'};
 %% snapshot of activity pattern for all stimlus activity at end of delay
 h3 = figure(3);
 ax = axes;
-image(ax,'XData',x,'YData',x,'CData',squeeze(RE(:,end,[N/2+1:N,1:N/2])),'CDataMapping','scaled')
-colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
+image(ax,'XData',x,'YData',x,'CData',squeeze(RE(:,1+TS,[N/2+1:N,1:N/2])),'CDataMapping','scaled')
+% colormap(cubehelix) % colormap can be found on FileExchange https://www.mathworks.com/matlabcentral/fileexchange/43700-cubehelix-colormap-generator-beautiful-and-versatile
 ylim(ax,[x(1),x(end)])
 ylabel('neuron index \theta','FontSize',10)
 yticks([-pi,-pi/2,0,pi/2])
